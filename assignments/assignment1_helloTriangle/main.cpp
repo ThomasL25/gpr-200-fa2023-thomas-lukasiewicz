@@ -8,15 +8,6 @@
 const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
 
-/*
-float vertices[9] = {
-	//x   //y   //z
-	-0.5, -0.5, 0.0,
-	 0.5, -0.5, 0.0,
-	 0.0,  0.5, 0.0
-};
-*/
-
 float vertices[21] = {
 	//x   //y  //z   //r  //g  //b  //a
 	-0.5, -0.5, 0.0, 1.0, 0.0, 0.0, 1.0, //Bottom left
@@ -28,7 +19,8 @@ const char* vertexShaderSource = R"(
 	#version 450
 	layout(location = 0) in vec3 vPos;
 	layout(location = 1) in vec4 vColor;
-	out vec4 Color; 
+	out vec4 Color;
+	uniform float _Time;
 	void main(){
 		Color = vColor;
 		vec3 offset = vec3(0,sin(vPos.x + _Time),0)*0.5;
@@ -46,6 +38,7 @@ const char* fragmentShaderSource = R"(
 	}
 )";
 
+//Creates a new vertex array object with vertex data
 unsigned int createVAO(float* vertexData, int numVertices)
 {
 	//Define a new buffer id
@@ -61,8 +54,8 @@ unsigned int createVAO(float* vertexData, int numVertices)
 	//Tell vao to pull vertex data from vbo
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-	//Define position attribute (3 floats)
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (const void*)0);
+	//Position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, (const void*)0);
 	glEnableVertexAttribArray(0);
 
 	//Color attribute
@@ -77,7 +70,7 @@ unsigned int createVAO(float* vertexData, int numVertices)
 // Returns the id of the shader object
 unsigned int createShader(GLenum shaderType, const char* sourceCode)
 {
-	//Create a new vertec shader object
+	//Create a new vertex shader object
 	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	//Supply the shader object with source code
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
@@ -86,7 +79,7 @@ unsigned int createShader(GLenum shaderType, const char* sourceCode)
 
 	int success;
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if(!success) {
+	if (!success) {
 		//512 is an arbitrary length, but should be plenty of characters for our error message.
 		char infoLog[512];
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
@@ -96,23 +89,22 @@ unsigned int createShader(GLenum shaderType, const char* sourceCode)
 	return vertexShader;
 }
 
-//Creates a new shader program with vertec + fragment stages
+//Creates a new shader program with vertex + fragment stages
 // Returns id of new shader program if successful, 0 if failed
-unsigned int createShaderProgram(const char* vertecShaderSource, const char* fragmentShaderSource)
+unsigned int createShaderProgram(const char* vertexShaderSource, const char* fragmentShaderSource)
 {
-	unsigned int vertexShader =
-	createShader(GL_VERTEX_SHADER, vertexShaderSource);
-	unsigned int fragmentShader =
-	createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
+	unsigned int vertexShader = createShader(GL_VERTEX_SHADER, vertexShaderSource);
+	unsigned int fragmentShader = createShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
 
 	unsigned int shaderProgram = glCreateProgram();
-	// Attach each stage
+	//Attach each stage
 	glAttachShader(shaderProgram, vertexShader);
-	// glAttachShader(shaderProgram,geometryShader)
+	//glAttachShader(shaderProgram, geometryShader);
 	glAttachShader(shaderProgram, fragmentShader);
-	// Link all the stages together
+	//Link all the stages together
 	glLinkProgram(shaderProgram);
 
+	//Check for linking errors
 	int success;
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
@@ -123,6 +115,7 @@ unsigned int createShaderProgram(const char* vertecShaderSource, const char* fra
 	//The linked program now contains our compiled code, so we can delete these intermediate objects
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
 
 	return shaderProgram;
 }
@@ -146,8 +139,7 @@ int main() {
 		return 1;
 	}
 
-	unsigned int shader =
-		createShaderProgram(vertexShaderSource, fragmentShaderSource);
+	unsigned int shader = createShaderProgram(vertexShaderSource, fragmentShaderSource);
 	unsigned int vao = createVAO(vertices, 3);
 
 	while (!glfwWindowShouldClose(window)) {
@@ -159,9 +151,9 @@ int main() {
 
 		//The current time in seconds this frame
 		float time = (float)glfwGetTime();
-		// Get the location of the uniform by name
+		//Get the location of the uniform by name
 		int timeLocation = glGetUniformLocation(shader, "_Time");
-		// Set the value of the variable at the location
+		//Set the value of the variable at the location
 		glUniform1f(timeLocation, time);
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
