@@ -71,9 +71,9 @@ unsigned int createVAO(float* vertexData, int numVertices)
 unsigned int createShader(GLenum shaderType, const char* sourceCode)
 {
 	//Create a new vertex shader object
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	unsigned int vertexShader = glCreateShader(shaderType);
 	//Supply the shader object with source code
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	glShaderSource(vertexShader, 1, &sourceCode, NULL);
 	//Compile the shader object
 	glCompileShader(vertexShader);
 
