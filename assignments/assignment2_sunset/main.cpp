@@ -9,21 +9,27 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+struct Vertex {
+	float x, y, z;
+	float u, v; 
+};
+
 unsigned int createShader(GLenum shaderType, const char* sourceCode);
 unsigned int createShaderProgram(const char* vertexShaderSource, const char* fragmentShaderSource);
-unsigned int createVAO(float* vertexData, int numVertices, unsigned int* indicesData, int numIndices);
+unsigned int createVAO(Vertex* vertexData, int numVertices, unsigned int* indicesData, int numIndices);
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 const int SCREEN_WIDTH = 1080;
 const int SCREEN_HEIGHT = 720;
 
 
-float vertices[12] = {
+
+Vertex vertices[4] = {
 	//x    y    z
-	-0.8 , -0.8 , 0.0 , //Bottom left
-	 0.8 , -0.8 , 0.0 , //Bottom right
-	 0.8 ,  0.8 , 0.0 , //Top right
-	-0.8 ,  0.8 , 0.0 //Top left
+	{-0.8 , -0.8 , 0.0 , 0, 0}, //Bottom left
+	{ 0.8 , -0.8 , 0.0 , 1, 0}, //Bottom right
+	{ 0.8 ,  0.8 , 0.0 , 1, 1}, //Top right
+	{-0.8 ,  0.8 , 0.0 , 0, 1}//Top left
 };
 
 
@@ -84,9 +90,6 @@ int main() {
 		shader.setVec3("_Color", triangleColor[0], triangleColor[1], triangleColor[2]);
 		shader.setFloat("_Brightness", triangleBrightness);
 
-		//Wireframe
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
 		//Render UI
@@ -114,7 +117,7 @@ int main() {
 }
 
 
-unsigned int createVAO(float* vertexData, int numVertices, unsigned int* indicesData, int numIndices) {
+unsigned int createVAO(Vertex* vertexData, int numVertices, unsigned int* indicesData, int numIndices) {
 	unsigned int vao;
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
@@ -132,8 +135,12 @@ unsigned int createVAO(float* vertexData, int numVertices, unsigned int* indices
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * numVertices * 3, vertexData, GL_STATIC_DRAW);
 
 	//Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (const void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)offsetof(Vertex, x));
 	glEnableVertexAttribArray(0);
+
+	//UV
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(offsetof(Vertex, u)));
+	glEnableVertexAttribArray(1);
 
 	return vao;
 }
