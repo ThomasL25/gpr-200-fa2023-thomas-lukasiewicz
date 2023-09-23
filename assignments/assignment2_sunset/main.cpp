@@ -57,14 +57,13 @@ int main() {
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init();
 
-	std::string vertexShaderSource = tal::loadShaderSourceFromFile("assets/vertexShader.vert");
-	std::string fragmentShaderSource = tal::loadShaderSourceFromFile("assets/fragmentShader.frag");
-	unsigned int shader = createShaderProgram(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
+
+	tal::Shader shader = tal::Shader("assets/vertexShader.vert", "assets/fragmentShader.frag");
 
 	unsigned int vao = createVAO(vertices, 3);
 
 
-	glUseProgram(shader);
+	shader.use();
 	glBindVertexArray(vao);
 
 	while (!glfwWindowShouldClose(window)) {
@@ -73,8 +72,8 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		//Set uniforms
-		glUniform3f(glGetUniformLocation(shader, "_Color"), triangleColor[0], triangleColor[1], triangleColor[2]);
-		glUniform1f(glGetUniformLocation(shader,"_Brightness"), triangleBrightness);
+		shader.setVec3("_Color", triangleColor[0], triangleColor[1], triangleColor[2]);
+		shader.setFloat("_Brightness", triangleBrightness);
 
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
