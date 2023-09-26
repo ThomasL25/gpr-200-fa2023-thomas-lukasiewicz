@@ -91,4 +91,8 @@ namespace tal {
 		glUniform4f(glGetUniformLocation(m_id, name.c_str()), x, y, z, w);
 	}
 
+	int Shader::getID()
+	{
+		return m_id;
+	}
 }

@@ -86,6 +86,13 @@ int main() {
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		//The current time in seconds this frame
+		float time = (float)glfwGetTime();
+		//Get the location of the uniform by name
+		int timeLocation = glGetUniformLocation(shader.getID(), "_Time");
+		//Set the value of the variable at the location
+		glUniform1f(timeLocation, time);
+
 		//Set uniforms
 		shader.setVec3("_Color", triangleColor[0], triangleColor[1], triangleColor[2]);
 		shader.setFloat("_Brightness", triangleBrightness);
