@@ -1,13 +1,9 @@
 #version 450
 out vec4 FragColor;
-out float t;
-out float edge;
-out float circleRadius;
-out float d;
-out vec3 col;
-out vec2 circlePos;
 in vec2 UV;
 uniform float _Time;
+uniform vec2 iResolution;
+
 
 float circleSDF(vec2 p, float r){
     return length(p)-r;
@@ -21,55 +17,29 @@ float roundedRectSDF( in vec2 p, in vec2 b, in float r )
 
 void main(){
 
-    edge = sin(_Time)*0.5 + 0.5;
-    t = smoothstep(edge-0.05,edge+0.05,UV.x);
-    FragColor = vec4(t,t,t,1.0);
+float aspect = iResolution.x / iResolution.y;
 
-    circlePos = vec2(cos(_Time),sin(_Time));
-    circleRadius = 0.2;
-    d = circleSDF(UV - circlePos,circleRadius);
+vec2 circlePos = vec2(.8,cos(_Time) -.3);
+float circleRadius = 0.4;
+float d = circleSDF(UV - circlePos,circleRadius);
+
+float d2 = distance(UV, vec2(0.0,sin(_Time)));
+float t2 = smoothstep(1.0,1.0,d);
 
 
-	//FragColor = vec4(UV, 0.0, 1.0); // Original 
+
+vec3 color = mix(vec3(1.0,1.0,0.0),vec3(0.9,0.0,0.5),UV.y);
     
-    /*
-    // for some reason it just cant accept when there is more than one command happening and i have no clue how to make this work, also how to implement time?
-    // Bottom Mountains
-    t = .30 + sin(UV.x*12.56*2)*0.075;
-    t = step(t,UV.y);
-    */
-
-    /*
-    //Sine graph no movement
-    float t = sin(UV.x*6.28)*0.5 + 0.5;
-    FragColor = vec4(t,t,t,1.0);
-    */
-
-    /*
-    // Hills preset which works with multiple things????
-    //BG gradient
-    color = mix(vec3(1.0,1.0,0.0),vec3(0.9,0.0,0.5),UV.y);
+//Get 0-1 T value for hill shape
+float hills = 1.0 - step(sin(UV.x*6.0) * 0.2 + 0.3,UV.y);
     
-    //Get 0-1 T value for hill shape
-    float hills = 1.0 - step(sin(UV.x*6.0) * 0.2 + 0.3,UV.y);
-    
-    //Blend dark grey hills
-    color = mix(color,vec3(0.2),hills);
-    */
+//Blend dark grey hills
+color = mix(color,vec3(0.2),hills);
 
-    /*
-    // Supposedly moving circle (doesnt work)
-    circlePos = vec2(cos(iTime),sin(iTime));
-    float circleRadius = 0.2;
-    float d = circleSDF(UV - circlePos,circleRadius);
-    */
+vec3 circleBlank = vec3(d, d, d);
+//circleBlank = mix(circleBlank, vec3(1.0, 1.0, 0.0), UV.x);
 
-
-    /*
-    // Supposedly moving Sine Frag Shader (doesnt work)
-    float t = sin(UV.x*6.28+iTime)*0.5 + 0.5;
-    FragColor = vec4(t,t,t,1.0);
-    */
-
-
+color = mix(color,vec3(0.0) ,circleBlank);
+	FragColor = vec4(color, 1.0); // Original 
+   
 }

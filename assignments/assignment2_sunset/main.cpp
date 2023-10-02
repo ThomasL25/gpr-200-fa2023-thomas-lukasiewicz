@@ -87,6 +87,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		shader.setFloat("_Time", (float)glfwGetTime());
+		shader.setVec2("iResolution", SCREEN_WIDTH, SCREEN_HEIGHT);
 		
 
 		//Set uniforms
@@ -113,6 +114,7 @@ int main() {
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
+
 
 		glfwSwapBuffers(window);
 	}
