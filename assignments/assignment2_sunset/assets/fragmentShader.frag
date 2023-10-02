@@ -1,9 +1,13 @@
 #version 450
 out vec4 FragColor;
 out float t;
+out float edge;
+out float circleRadius;
+out float d;
 out vec3 col;
+out vec2 circlePos;
 in vec2 UV;
-uniform float iTime;
+uniform float _Time;
 
 float circleSDF(vec2 p, float r){
     return length(p)-r;
@@ -17,14 +21,23 @@ float roundedRectSDF( in vec2 p, in vec2 b, in float r )
 
 void main(){
 
-    /*
-	FragColor = vec4(UV, 0.0, 1.0); // Original 
-    */
+    edge = sin(_Time)*0.5 + 0.5;
+    t = smoothstep(edge-0.05,edge+0.05,UV.x);
+    FragColor = vec4(t,t,t,1.0);
 
-    // for some reason it just cant accept when there is more than one command happening and i have no clue how to make this work, also how to implement time???
+    circlePos = vec2(cos(_Time),sin(_Time));
+    circleRadius = 0.2;
+    d = circleSDF(UV - circlePos,circleRadius);
+
+
+	//FragColor = vec4(UV, 0.0, 1.0); // Original 
+    
+    /*
+    // for some reason it just cant accept when there is more than one command happening and i have no clue how to make this work, also how to implement time?
     // Bottom Mountains
     t = .30 + sin(UV.x*12.56*2)*0.075;
     t = step(t,UV.y);
+    */
 
     /*
     //Sine graph no movement
