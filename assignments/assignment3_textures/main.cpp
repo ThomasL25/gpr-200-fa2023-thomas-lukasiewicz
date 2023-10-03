@@ -7,6 +7,7 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <tal/texture.h>
 
 #include <ew/shader.h>
 
@@ -63,6 +64,23 @@ int main() {
 	unsigned int quadVAO = createVAO(vertices, 4, indices, 6);
 
 	glBindVertexArray(quadVAO);
+
+	unsigned int textureA = loadTexture("assets/bricks.jpg");
+	unsigned int textureB = loadTexture("assets/noise.png");
+
+	//Place textureA in unit 0
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureA);
+	//Place textureB in unit 1
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, textureB);
+
+	//Must be using this shader when setting uniforms
+	shader.use();
+	//Make sampler2D _BrickTexture sample from unit 0
+	shader.setInt("_BrickTexture", 0);
+	//Make sampler2D _MarioTexture sample from unit 1
+	shader.setInt("_NoiseTexture", 1);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
