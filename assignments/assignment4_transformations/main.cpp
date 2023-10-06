@@ -11,12 +11,15 @@
 #include <ew/shader.h>
 #include <ew/ewMath/vec3.h>
 #include <ew/procGen.h>
+#include <tal/transformations.h>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 //Square aspect ratio for now. We will account for this with projection later.
 const int SCREEN_WIDTH = 720;
 const int SCREEN_HEIGHT = 720;
+
+tal::Transform transform; 
 
 int main() {
 	printf("Initializing...");
@@ -66,7 +69,8 @@ int main() {
 		shader.use();
 
 		//TODO: Set model matrix uniform
-
+		shader.use();
+		shader.setMat4("_Model", transform.getModelMatrix());
 		cubeMesh.draw();
 
 		//Render UI

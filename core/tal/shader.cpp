@@ -1,5 +1,5 @@
 #include "shader.h"
-#include "../ew/external/glad.h"
+
 
 namespace tal {
 
@@ -91,6 +91,11 @@ namespace tal {
 	void Shader::setVec4(const std::string& name, float x, float y, float z, float w) const
 	{
 		glUniform4f(glGetUniformLocation(m_id, name.c_str()), x, y, z, w);
+	}
+
+	void Shader::setMat4(const std::string& name, const ew::Mat4& v) const
+	{
+		glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &v[0][0]);
 	}
 
 }
