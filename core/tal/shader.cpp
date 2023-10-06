@@ -1,7 +1,8 @@
 #include "shader.h"
-#include "C:\Users\tluka\Desktop\gpr-200-fa2023-thomas-lukasiewicz\core\ew\external\glad.h"
+#include "../ew/external/glad.h"
 
 namespace tal {
+
 	std::string loadShaderSourceFromFile(const std::string& filePath) {
 		std::ifstream fstream(filePath);
 		if (!fstream.is_open()) {
@@ -75,6 +76,7 @@ namespace tal {
 	{
 		glUniform1f(glGetUniformLocation(m_id, name.c_str()), v);
 	}
+
 
 	void Shader::setVec2(const std::string& name, float x, float y) const
 	{
