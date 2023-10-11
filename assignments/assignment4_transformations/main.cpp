@@ -18,8 +18,10 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 //Square aspect ratio for now. We will account for this with projection later.
 const int SCREEN_WIDTH = 720;
 const int SCREEN_HEIGHT = 720;
+const int NUM_CUBES = 4;
 
-tal::Transform transform; 
+tal::Transform* transforms = new tal::Transform[4]; 
+
 
 int main() {
 	printf("Initializing...");
@@ -64,14 +66,19 @@ int main() {
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
 		//Clear both color buffer AND depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//Set uniforms
-		shader.use();
-
+		
+		// Making it so that the squares will start not all clumped in the middle of the screen
+		transforms[0].position = ew::Vec3(-0.5f, 0.5f, 0.0f);
+		transforms[1].position = ew::Vec3(0.5f, 0.5f, 0.0f);
+		transforms[2].position = ew::Vec3(-0.5f, -0.5f, 0.0f);
+		transforms[3].position = ew::Vec3(0.5f, -0.5f, 0.0f);
 		//TODO: Set model matrix uniform
-		shader.use();
-		shader.setMat4("_Model", transform.getModelMatrix());
-		cubeMesh.draw();
+		for (int i = 0; i < NUM_CUBES; i++)
+		{
+			shader.use();
+			shader.setMat4("_Model", transforms[i].getModelMatrix());
+			cubeMesh.draw();
+		}
 
 		//Render UI
 		{
@@ -81,9 +88,17 @@ int main() {
 
 			ImGui::Begin("Transform");
 
-			ImGui::DragFloat3("Position", &transform.position.x, 0.05f);
-			ImGui::DragFloat3("Rotation", &transform.rotation.x, 1.0f);
-			ImGui::DragFloat3("Scale", &transform.scale.x, 0.05f);
+			for (size_t i = 0; i < NUM_CUBES; i++)
+			{
+				ImGui::PushID(i);
+				if (ImGui::CollapsingHeader("Transform")) {
+					ImGui::DragFloat3("Position", &transforms[i].position.x, 0.05f);
+					ImGui::DragFloat3("Rotation", &transforms[i].rotation.x, 0.01f);
+					ImGui::DragFloat3("Scale", &transforms[i].scale.x, 0.05f);
+				}
+				ImGui::PopID();
+			}
+
 
 			ImGui::End();
 
@@ -93,6 +108,7 @@ int main() {
 
 		glfwSwapBuffers(window);
 	}
+	delete[] transforms;
 	printf("Shutting down...");
 }
 
