@@ -67,7 +67,10 @@ int main() {
 		cubeTransforms[i].position.x = i % (NUM_CUBES / 2) - 0.5;
 		cubeTransforms[i].position.y = i / (NUM_CUBES / 2) - 0.5;
 	}
-
+	/*
+	ew::Mat4 view;
+	ew::Mat4 projection;
+	
 	// Camera declaration?
 	tal::CameraStruct camera;
 	camera.position = ew::Vec3(0, 0, 5);
@@ -76,7 +79,7 @@ int main() {
 	camera.orthoSize = 6;
 	camera.nearPlane = 0.1;
 	camera.farPlane = 100;
-
+	*/
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
@@ -93,6 +96,9 @@ int main() {
 			shader.setMat4("_Model", cubeTransforms[i].getModelMatrix());
 			cubeMesh.draw();
 		}
+
+		//shader.setMat4("_View", view);
+		//shader.setMat4("_Projection", projection);
 
 		//Render UI
 		{

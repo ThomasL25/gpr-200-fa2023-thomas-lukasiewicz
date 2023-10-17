@@ -68,14 +68,14 @@ namespace tal {
 		ew::Vec3 f = Normalize(eye - target);
 		ew::Vec3 r = Normalize(Cross(up, f));
 		ew::Vec3 u = Normalize(Cross(f, r));
-		
+
 		return ew::Mat4(
 			r.x, r.y, r.z, -Dot(r, eye),
 			u.x, u.y, u.z, -Dot(u, eye),
 			f.x, f.y, f.z, -Dot(f, eye),
 			0, 0, 0, 1
 		);
-	}
+	};
 
 	// Orthographic projection
 	inline ew::Mat4 Orthographic(float height, float aspect, float near, float far) {
@@ -90,7 +90,7 @@ namespace tal {
 			0, 0, -(2.0 / (far - near)), -((far + near) / (far - near)),
 			0, 0, 0, 1
 		);
-	}
+	};
 
 	// Perspective projection
 	// fov = vertical aspect ratio
@@ -101,7 +101,7 @@ namespace tal {
 			0, 0, (near + far) / (near - far), (2.0 * far * near) / (near - far),
 			0, 0, -1, 0
 		);
-	}
+	};
 
 	struct Transform {
 		ew::Vec3 position = ew::Vec3(0.0f, 0.0f, 0.0f);
