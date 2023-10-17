@@ -4,7 +4,7 @@
 #include "../tal/transformations.h"
 
 namespace tal {
-	struct Camera {
+	struct CameraStruct {
 		ew::Vec3 position; // Camera body position
 		ew::Vec3 target; // Position to look at 
 		float fov; // Vertical field of view in degrees
@@ -15,7 +15,7 @@ namespace tal {
 		float orthoSize; // Height of the orthographic frustum
 		// Word -> View
 		ew::Mat4 ViewMatrix() {
-			return LookAt(position, target, Vec3(0, 1, 0));
+			return LookAt(position, target, ew::Vec3(0, 1, 0));
 		};
 		// View -> Clip
 		ew::Mat4 ProjectionMatrix() {
