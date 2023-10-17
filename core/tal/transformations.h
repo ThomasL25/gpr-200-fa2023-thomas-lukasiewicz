@@ -64,10 +64,14 @@ namespace tal {
 	// target = position to look at
 	// up = up axis, usually(0,1,0)
 	inline ew::Mat4 LookAt(ew::Vec3 eye, ew::Vec3 target, ew::Vec3 up) {
+		ew::Vec3 f = Normalize(eye - target);
+		ew::Vec3 r = Normalize(Cross(up, f));
+		ew::Vec3 u = Normalize(Cross(f, r));
+		
 		return ew::Mat4(
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
+			r.x, r.y, r.z, -Dot(r, eye),
+			u.x, u.y, u.z, -Dot(u, eye),
+			f.x, f.y, f.z, -Dot(f, eye),
 			0, 0, 0, 1
 		);
 	}
