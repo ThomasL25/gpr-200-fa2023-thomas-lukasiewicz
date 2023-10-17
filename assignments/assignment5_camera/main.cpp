@@ -67,9 +67,6 @@ int main() {
 		cubeTransforms[i].position.x = i % (NUM_CUBES / 2) - 0.5;
 		cubeTransforms[i].position.y = i / (NUM_CUBES / 2) - 0.5;
 	}
-	/*
-	ew::Mat4 view;
-	ew::Mat4 projection;
 	
 	// Camera declaration?
 	tal::CameraStruct camera;
@@ -79,7 +76,9 @@ int main() {
 	camera.orthoSize = 6;
 	camera.nearPlane = 0.1;
 	camera.farPlane = 100;
-	*/
+	camera.orthographic = true;
+	camera.aspectRatio = 4 / 3;
+	
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		glClearColor(0.3f, 0.4f, 0.9f, 1.0f);
@@ -97,8 +96,8 @@ int main() {
 			cubeMesh.draw();
 		}
 
-		//shader.setMat4("_View", view);
-		//shader.setMat4("_Projection", projection);
+		shader.setMat4("_View", camera.ViewMatrix());
+		shader.setMat4("_Projection", camera.ProjectionMatrix());
 
 		//Render UI
 		{
@@ -119,6 +118,16 @@ int main() {
 				ImGui::PopID();
 			}
 			ImGui::Text("Camera");
+
+			
+
+			ImGui::DragFloat3("Position", &camera.position.x, 0.05f);
+			ImGui::DragFloat3("Target", &camera.target.x, 0.05f);
+			ImGui::DragFloat("FOV", &camera.fov, 0.05f);
+			ImGui::Checkbox("Orthographic", &camera.orthographic);
+			ImGui::DragFloat("Near Plane", &camera.nearPlane, 0.05f);
+			ImGui::DragFloat("Far Plane", &camera.farPlane, 0.05f);
+
 			ImGui::End();
 			
 			ImGui::Render();
