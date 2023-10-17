@@ -59,6 +59,34 @@ namespace tal {
 		);
 	};
 
+	// Creates a right handed view space
+	// eye = eye (camera) position
+	// up = up axis, usually(0,1,0)
+	inline ew::Mat4 LookAt(ew::Vec3 eye, ew::Vec3 target, ew::Vec3 up) {
+
+	}
+
+	// Orthographic projection
+	inline ew::Mat4 Orthographic(float height, float aspect, float near, float far) {
+		return ew::Mat4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			0, 0, 0, 1
+		);
+	}
+
+	// Perspective projection
+	// fov = vertical aspect ratio
+	inline ew::Mat4 Perspective(float fovm, float aspect, float near, float far) {
+		return ew::Mat4(
+			1 / (tan(fovm / 2) * aspect), 0, 0, 0,
+			0, 1 / tan(fovm / 2), 0, 0,
+			0, 0, (near + far) / (near - far), (2 * far * near) / (near - far),
+			0, 0, -1, 0
+		);
+	}
+
 	struct Transform {
 		ew::Vec3 position = ew::Vec3(0.0f, 0.0f, 0.0f);
 		ew::Vec3 rotation = ew::Vec3(0.0f, 0.0f, 0.0f);
