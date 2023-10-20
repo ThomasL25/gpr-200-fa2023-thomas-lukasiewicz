@@ -1,6 +1,7 @@
 #pragma once
 #include "../ew/ewMath/mat4.h"
 #include "../ew/ewMath/vec3.h"
+#include "../ew/ewMath/ewMath.h"
 
 
 namespace tal {
@@ -79,7 +80,7 @@ namespace tal {
 
 	// Orthographic projection
 	inline ew::Mat4 Orthographic(float height, float aspect, float near, float far) {
-		float width = height / aspect;
+		float width = height * aspect;
 		float r = width / 2.0;
 		float t = height / 2.0;
 		float l = -r;
@@ -96,8 +97,8 @@ namespace tal {
 	// fov = vertical aspect ratio
 	inline ew::Mat4 Perspective(float fovm, float aspect, float near, float far) {
 		return ew::Mat4(
-			1.0 / (tan(fovm / 2.0) * aspect), 0, 0, 0,
-			0, 1.0 / tan(fovm / 2.0), 0, 0,
+			1.0 / (tan(ew::Radians(fovm) / 2.0) * aspect), 0, 0, 0,
+			0, 1.0 / tan(ew::Radians(fovm) / 2.0), 0, 0,
 			0, 0, (near + far) / (near - far), (2.0 * far * near) / (near - far),
 			0, 0, -1, 0
 		);
