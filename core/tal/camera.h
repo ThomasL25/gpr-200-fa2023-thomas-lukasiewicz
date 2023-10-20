@@ -15,17 +15,17 @@ namespace tal {
 		float orthoSize; // Height of the orthographic frustum
 		// Word -> View
 		ew::Mat4 ViewMatrix() {
-			return LookAt(position, target, ew::Vec3(0, 1, 0));
+			return tal::LookAt(position, target, ew::Vec3(0, 1, 0));
 		};
 		// View -> Clip
 		ew::Mat4 ProjectionMatrix() {
 			if (orthographic)
 			{
-				return Orthographic(orthoSize, aspectRatio, nearPlane, farPlane);
+				return tal::Orthographic(orthoSize, aspectRatio, nearPlane, farPlane);
 			}
 			else
 			{
-				return Perspective(fov, aspectRatio, nearPlane, farPlane);
+				return tal::Perspective(fov, aspectRatio, nearPlane, farPlane);
 			}
 		}
 	};
