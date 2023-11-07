@@ -14,6 +14,7 @@
 #include <ew/transform.h>
 #include <ew/camera.h>
 #include <ew/cameraController.h>
+#include <tal/procGen.h>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void resetCamera(ew::Camera& camera, ew::CameraController& cameraController);
@@ -39,6 +40,14 @@ struct AppSettings {
 
 ew::Camera camera;
 ew::CameraController cameraController;
+
+// Create Mesh Data
+ew::MeshData sphereMeshData = tal::createSphere(0.5f, 64);
+// Create mesh renderer
+ew::Mesh sphereMesh(sphereMeshData);
+// Initialize transform
+ew::Transform sphereTransform;
+//sphereTransform.position = ew::Vec3(1.0f, 0.0f, 0.0f);
 
 int main() {
 	printf("Initializing...");
