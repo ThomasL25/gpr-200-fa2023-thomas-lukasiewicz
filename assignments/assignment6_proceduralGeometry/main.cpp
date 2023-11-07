@@ -94,6 +94,9 @@ int main() {
 	//Initialize transforms
 	ew::Transform cubeTransform;
 
+	shader.setMat4("Model_", sphereTransform.getModelMatrix());
+	sphereMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
+
 	resetCamera(camera,cameraController);
 
 	while (!glfwWindowShouldClose(window)) {
