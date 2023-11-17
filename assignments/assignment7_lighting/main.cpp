@@ -86,7 +86,6 @@ int main() {
 	shader.setVec3("_Lights[0].position", lights[0].position);
 	shader.setVec3("_Lights[0].color", lights[0].color);
 
-
 	struct Material {
 		float ambientK; //Ambient coefficient (0-1)
 		float diffuseK; //Diffuse coefficient (0-1)

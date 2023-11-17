@@ -15,11 +15,10 @@ struct Light
 #define MAX_LIGHTS 4
 uniform Light _Lights[MAX_LIGHTS];
 
-
-
 uniform sampler2D _Texture;
 
 void main(){
 	FragColor = texture(_Texture,fs_in.UV);
 	vec3 normal = normalize(fs_in.WorldNormal);
+
 }
