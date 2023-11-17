@@ -14,7 +14,7 @@
 #include <ew/transform.h>
 #include <ew/camera.h>
 #include <ew/cameraController.h>
-#include <tal/procGen.h>
+#include <ew/procGen.h>
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 void resetCamera(ew::Camera& camera, ew::CameraController& cameraController);
@@ -25,7 +25,7 @@ int SCREEN_HEIGHT = 720;
 float prevTime;
 
 struct AppSettings {
-	const char* shadingModeNames[6] = { "Solid Color","Normals","UVs","Texture","Lit","Texture Lit"};
+	const char* shadingModeNames[6] = { "Solid Color","Normals","UVs","Texture","Lit","Texture Lit" };
 	int shadingModeIndex;
 
 	ew::Vec3 bgColor = ew::Vec3(0.1f);
@@ -40,14 +40,6 @@ struct AppSettings {
 
 ew::Camera camera;
 ew::CameraController cameraController;
-
-// Create Mesh Data
-ew::MeshData sphereMeshData = tal::createSphere(0.5f, 64);
-// Create mesh renderer
-ew::Mesh sphereMesh(sphereMeshData);
-// Initialize transform
-ew::Transform sphereTransform;
-//sphereTransform.position = ew::Vec3(1.0f, 0.0f, 0.0f);
 
 int main() {
 	printf("Initializing...");
@@ -85,19 +77,38 @@ int main() {
 	glPolygonMode(GL_FRONT_AND_BACK, appSettings.wireframe ? GL_LINE : GL_FILL);
 
 	ew::Shader shader("assets/vertexShader.vert", "assets/fragmentShader.frag");
-	unsigned int brickTexture = ew::loadTexture("assets/brick_color.jpg",GL_REPEAT,GL_LINEAR);
+	unsigned int brickTexture = ew::loadTexture("assets/brick_color.jpg", GL_REPEAT, GL_LINEAR);
 
 	//Create cube
 	ew::MeshData cubeMeshData = ew::createCube(0.5f);
 	ew::Mesh cubeMesh(cubeMeshData);
-
 	//Initialize transforms
 	ew::Transform cubeTransform;
 
-	shader.setMat4("Model_", sphereTransform.getModelMatrix());
-	sphereMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
+	//Create sphere 
+	ew::MeshData sphereMeshData = ew::createSphere(0.5f, 64);
+	//Create mesh renderer
+	ew::Mesh sphereMesh(sphereMeshData);
+	//Initialize transform
+	ew::Transform sphereTransform;
 
-	resetCamera(camera,cameraController);
+	//Create cylinder
+	ew::MeshData cylinderMeshData = ew::createCylinder(0.5f, 1, 64);
+	//Create mesh renderer
+	ew::Mesh cylinderMesh(cylinderMeshData);
+	//Initialize transform
+	ew::Transform cylinderTransform;
+
+	//Create Plane
+	ew::MeshData planeMeshData = ew::createPlane(0.5f, 1, 64);
+	//Create mesh renderer
+	ew::Mesh planeMesh(planeMeshData); 
+	//Initialize transform
+	ew::Transform planeTransform; 
+
+
+
+	resetCamera(camera, cameraController);
 
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -110,12 +121,10 @@ int main() {
 		cameraController.Move(window, &camera, deltaTime);
 
 		//Render
-		glClearColor(appSettings.bgColor.x, appSettings.bgColor.y, appSettings.bgColor.z,1.0f);
+		glClearColor(appSettings.bgColor.x, appSettings.bgColor.y, appSettings.bgColor.z, 1.0f);
 
 		//Clear both color buffer AND depth buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		
 
 		shader.use();
 		glBindTexture(GL_TEXTURE_2D, brickTexture);
@@ -129,9 +138,26 @@ int main() {
 		ew::Vec3 lightF = ew::Vec3(sinf(lightRot.y) * cosf(lightRot.x), sinf(lightRot.x), -cosf(lightRot.y) * cosf(lightRot.x));
 		shader.setVec3("_LightDir", lightF);
 
+		//Draw Sphere
+		shader.setMat4("_Model", sphereTransform.getModelMatrix());
+		sphereTransform.position = ew::Vec3(-0.10f, 0.0f, 00.0f);
+		sphereMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
+
 		//Draw cube
 		shader.setMat4("_Model", cubeTransform.getModelMatrix());
+		cubeTransform.position = ew::Vec3(2.0f, 0.0f, 00.0f);
 		cubeMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
+
+		//Draw Cylinder
+		shader.setMat4("_Model", cylinderTransform.getModelMatrix()); 
+		cylinderTransform.position = ew::Vec3(1.0f, 0.0f, 00.0f); 
+		cylinderMesh.draw((ew::DrawMode)appSettings.drawAsPoints); 
+
+		//Draw Plane
+		shader.setMat4("_Model", planeTransform.getModelMatrix());
+		planeTransform.position = ew::Vec3(3.0f, 0.0f, 00.0f);
+		planeMesh.draw((ew::DrawMode)appSettings.drawAsPoints);
+
 
 		//Render UI
 		{
@@ -176,7 +202,7 @@ int main() {
 					glDisable(GL_CULL_FACE);
 			}
 			ImGui::End();
-			
+
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}

@@ -130,6 +130,8 @@ int main() {
 
 		//TODO: Render point lights
 
+		
+
 		//Render UI
 		{
 			ImGui_ImplGlfw_NewFrame();
