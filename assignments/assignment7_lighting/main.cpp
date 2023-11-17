@@ -59,7 +59,7 @@ int main() {
 	glEnable(GL_DEPTH_TEST);
 
 	ew::Shader shader("assets/defaultLit.vert", "assets/defaultLit.frag");
-	unsigned int brickTexture = ew::loadTexture("assets/brick_color.jpg",GL_REPEAT,GL_LINEAR);
+	unsigned int brickTexture = ew::loadTexture("assets/brick_color.jpg", GL_REPEAT, GL_LINEAR);
 
 	//Create cube
 	ew::Mesh cubeMesh(ew::createCube(1.0f));
@@ -80,6 +80,12 @@ int main() {
 		ew::Vec3 position; //World Space
 		ew::Vec3 color; //RGB
 	};
+
+	Light lights[3];
+
+	shader.setVec3("_Lights[0].position", lights[0].position);
+	shader.setVec3("_Lights[0].color", lights[0].color);
+
 
 	struct Material {
 		float ambientK; //Ambient coefficient (0-1)

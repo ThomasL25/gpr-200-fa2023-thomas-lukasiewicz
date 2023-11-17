@@ -7,6 +7,16 @@ in Surface{
 	vec3 WorldNormal; //Per-fragment interpolated world normal
 }fs_in;
 
+struct Light
+{
+	vec3 position;
+	vec3 color;
+};
+#define MAX_LIGHTS 4
+uniform Light _Lights[MAX_LIGHTS];
+
+
+
 uniform sampler2D _Texture;
 
 void main(){
