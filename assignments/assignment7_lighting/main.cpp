@@ -76,6 +76,18 @@ int main() {
 	sphereTransform.position = ew::Vec3(-1.5f, 0.0f, 0.0f);
 	cylinderTransform.position = ew::Vec3(1.5f, 0.0f, 0.0f);
 
+	struct Light {
+		ew::Vec3 position; //World Space
+		ew::Vec3 color; //RGB
+	};
+
+	struct Material {
+		float ambientK; //Ambient coefficient (0-1)
+		float diffuseK; //Diffuse coefficient (0-1)
+		float specular; //Specular coefficient (0-1)
+		float shininess; //Shininess
+	};
+
 	resetCamera(camera,cameraController);
 
 	while (!glfwWindowShouldClose(window)) {

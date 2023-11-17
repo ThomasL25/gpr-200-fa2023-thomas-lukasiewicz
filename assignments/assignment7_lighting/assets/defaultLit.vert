@@ -5,6 +5,7 @@ layout(location = 2) in vec2 vUV;
 
 out Surface{
 	vec2 UV;
+
 }vs_out;
 
 uniform mat4 _Model;
